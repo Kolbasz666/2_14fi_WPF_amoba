@@ -30,6 +30,10 @@ namespace _2_14fi_WPF_masodik
         }
         void Start()
         {
+            jatekos1.Content += Data.users[0].username;
+            jatekos2.Content += Data.users[1].username;
+            pontok1.Content += $"{Data.users[0].win}/{Data.users[0].lose}/{Data.users[0].draw}";
+            pontok2.Content += $"{Data.users[1].win}/{Data.users[1].lose}/{Data.users[1].draw}";
             for (int i = 0; i < 9; i++)
             {
                 int row = (int)Math.Floor((double)i / 3);
@@ -39,10 +43,28 @@ namespace _2_14fi_WPF_masodik
                 Grid.SetColumn(oneButton, col);
                 buttons.Add(oneButton);
                 gameplace.Children.Add(oneButton);
+                oneButton.FontSize = 80;
+                oneButton.Foreground = new SolidColorBrush(Colors.White);
+                //oneButton.Margin = new Thickness(0, -10, 0, 0);
+                oneButton.Content = " ";
                 oneButton.Click += ClickEvent;
+                oneButton.MouseEnter += MouseEvent;
                 //oneButton.Content = i;
             }
 
+        }
+        private void MouseEvent(object s, EventArgs e)
+        {
+            Button temp = s as Button;
+            if (temp.Content.ToString() == "X")
+            {
+                temp.Background = new SolidColorBrush(Colors.Blue);
+            }
+            else if (temp.Content.ToString() == "O")
+            {
+                temp.Background = new SolidColorBrush(Colors.Red);
+            }
+            //(s as Button).Background = 
         }
         private void ClickEvent(Object s, EventArgs e)
         {
@@ -59,7 +81,15 @@ namespace _2_14fi_WPF_masodik
                 data[row, col] = num;
                 //kiszínezzük a megfelelő színre a gombot
                 SolidColorBrush color = new SolidColorBrush(Colors.Blue);
-                if (Red) color = new SolidColorBrush(Colors.Red);
+                if (Red)
+                {
+                    color = new SolidColorBrush(Colors.Red);
+                    (s as Button).Content = "O";
+                }
+                else
+                {
+                    (s as Button).Content = "X";
+                }
                 (s as Button).Background = color;
                 //következő játékos jön, másik színnel
                 Red = !Red;
@@ -78,6 +108,7 @@ namespace _2_14fi_WPF_masodik
             else
                 return;
             //csak akkor fut le, ha vége a játéknak
+
             buttons.ForEach(button => button.Click -= ClickEvent);
         }
         private int CheckBoard()
@@ -92,10 +123,11 @@ namespace _2_14fi_WPF_masodik
                     sum += data[i, j];
                     sum2 += data[j, i];
                 }
-                if(result == 0)
+                if (result == 0)
                     result = Sum(sum, sum2, 3);
             }
-            if(result == 0) {
+            if (result == 0)
+            {
                 int sum = 0;
                 int sum2 = 0;
                 for (int i = 0; i < 3; i++)

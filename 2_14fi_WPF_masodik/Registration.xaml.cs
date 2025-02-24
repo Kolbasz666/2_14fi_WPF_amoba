@@ -40,6 +40,7 @@ namespace _2_14fi_WPF_masodik
                 return;
             }
             server.Registration(username.Text, password.Text);
+            this.Close();
         }
     }
 }

@@ -18,6 +18,9 @@
         </Style>
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="40 15 100 15"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="19"/>
         </Style>
     </Window.Resources>
     <Grid Background="Lime">

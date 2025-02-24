@@ -21,10 +21,25 @@ namespace _2_14fi_WPF_masodik
     {
         ServerConnection connection;
         Registration regWindow;
+        second GameWindow;
         public LoginWindow()
         {
             InitializeComponent();
             connection = new ServerConnection();
+
+        }
+        private void NewGame(object s, EventArgs e)
+        {
+            if (Data.users.Count == 2)
+            {
+                this.Hide();
+                GameWindow = new second();
+                GameWindow.Show();
+                GameWindow.Closing += (ss, ee) =>
+                {
+                    this.Show();
+                };
+            }
         }
         private void LoginClick(Object s, EventArgs e)
         {
@@ -46,7 +61,16 @@ namespace _2_14fi_WPF_masodik
         private void RegistrationClick(object s, EventArgs e)
         {
             regWindow = new Registration();
+            regWindow.Top = this.Top;
+            regWindow.Left = this.Left;
 
+            regWindow.Closing += (ss, ee) =>
+            {
+                this.Show();
+            };
+
+            regWindow.Show();
+            this.Hide();
         }
     }
 }
