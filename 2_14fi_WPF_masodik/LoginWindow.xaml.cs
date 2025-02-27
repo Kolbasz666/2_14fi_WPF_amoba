@@ -26,14 +26,46 @@ namespace _2_14fi_WPF_masodik
         {
             InitializeComponent();
             connection = new ServerConnection();
+            Data.users.CollectionChanged += ObservableEvent;
+            this.IsVisibleChanged += WindowVisibility;
+        }
+        void WindowVisibility(object s, DependencyPropertyChangedEventArgs e) {
+            if (this.Visibility == Visibility.Visible)
+            {
+                Data.users.CollectionChanged += ObservableEvent;
+            }
+            else
+            {
+                Data.users.CollectionChanged -= ObservableEvent;
+            }
+        }
+        
+        void ObservableEvent(object s, EventArgs e) {
+            if (Data.users[0].username != null)
+            {
+                player1.Background = new SolidColorBrush(Colors.Green);
+                if (Data.users[0].token == null)
+                    player1.Background = new SolidColorBrush(Colors.LightBlue);
+            }
+            else if (Data.users[0].username == null) { 
+                player1.Background = new SolidColorBrush(Colors.White);
+            }
 
+            if (Data.users[1].username != null)
+            { 
+                player2.Background = new SolidColorBrush(Colors.Green);
+                if (Data.users[1].token == null)
+                    player2.Background = new SolidColorBrush(Colors.LightBlue);
+            }
+            else if (Data.users[1].username == null)
+                player2.Background = new SolidColorBrush(Colors.White);
         }
         private void NewGame(object s, EventArgs e)
         {
             if (Data.users.Where(user => user.username != null).Count() == 2)
             {
                 this.Hide();
-                GameWindow = new second();
+                GameWindow = new second(connection);
                 GameWindow.Show();
                 GameWindow.Closing += (ss, ee) =>
                 {
@@ -56,7 +88,7 @@ namespace _2_14fi_WPF_masodik
                 password = user1Pass.Text;
                 if (password.Length < 1)
                 {
-                    Data.users[0] = new JsonResponse() { username = username };
+                    Data.users[0] = new JsonResponse() { username = username, draw = 0, win = 0, lose = 0 };
                     return;
                 }
             }
@@ -66,32 +98,23 @@ namespace _2_14fi_WPF_masodik
                 password = user2Pass.Text;
                 if (password.Length < 1)
                 {
-                    Data.users[1] = new JsonResponse() { username = username };
+                    Data.users[1] = new JsonResponse() { username = username, draw = 0, win = 0, lose = 0 };
                     return;
                 }
             }
-            if (Data.users.Select(user => user.username).Contains(username))
+            if (Data.users.Where(user => user.username == username && user.token != null).Count() == 1)
             {
                 MessageBox.Show("Duplikált bejelentkezés");
             }
             else
             {
                 JsonResponse onePlayer = await connection.Login(username, password);
-                if (onePlayer.username != null)
-                {
-                    if (sender.Name == "user1Login")
-                        Data.users[0] = onePlayer;
-                    else
-                        Data.users[1] = onePlayer;
-                }
+
+                if (sender.Name == "user1Login")
+                    Data.users[0] = onePlayer;
                 else
-                {
-                    if (sender.Name == "user1Login")
-                        Data.users[0] = onePlayer;
-                    else
-                        Data.users[1] = onePlayer;
-                }
-                
+                    Data.users[1] = onePlayer;
+
             }
         }
         private void RegistrationClick(object s, EventArgs e)

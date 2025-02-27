@@ -23,15 +23,18 @@ namespace _2_14fi_WPF_masodik
         private bool Red = false;
         private int[,] data = new int[3, 3];
         private int ClickCount = 0;
-        public second()
+        ServerConnection connection;
+        public second(ServerConnection connection)
         {
             InitializeComponent();
+            this.connection = connection;
             Start();
         }
         void Start()
         {
-            jatekos1.Content += Data.users[0].username;
-            jatekos2.Content += Data.users[1].username;
+            jatekos1.Content = Data.users[0].username;
+            jatekos2.Content = Data.users[1].username;
+            jatekos1.Background = new SolidColorBrush(Colors.AliceBlue);
             pontok1.Content += $"{Data.users[0].win}/{Data.users[0].lose}/{Data.users[0].draw}";
             pontok2.Content += $"{Data.users[1].win}/{Data.users[1].lose}/{Data.users[1].draw}";
             for (int i = 0; i < 9; i++)
@@ -51,8 +54,8 @@ namespace _2_14fi_WPF_masodik
                 oneButton.MouseEnter += MouseEvent;
                 //oneButton.Content = i;
             }
-
         }
+
         private void MouseEvent(object s, EventArgs e)
         {
             Button temp = s as Button;
@@ -85,10 +88,14 @@ namespace _2_14fi_WPF_masodik
                 {
                     color = new SolidColorBrush(Colors.Red);
                     (s as Button).Content = "O";
+                    jatekos1.Background = new SolidColorBrush(Colors.AliceBlue);
+                    jatekos2.Background = new SolidColorBrush(Colors.Lime);
                 }
                 else
                 {
                     (s as Button).Content = "X";
+                    jatekos2.Background = new SolidColorBrush(Colors.AliceBlue);
+                    jatekos1.Background = new SolidColorBrush(Colors.Lime);
                 }
                 (s as Button).Background = color;
                 //következő játékos jön, másik színnel
@@ -100,15 +107,38 @@ namespace _2_14fi_WPF_masodik
             int check = CheckBoard();
             //MessageBox.Show(check.ToString());
             if (check == 1)
+            {
                 MessageBox.Show("Az első játékos nyert.");
+                Data.users[0].win++;
+                Data.users[1].lose++;
+            }
             else if (check == -1)
+            {
                 MessageBox.Show("A második játékos nyert.");
+                Data.users[1].win++;
+                Data.users[0].lose++;
+            }
             else if (ClickCount == 9)
+            {
                 MessageBox.Show("Döntetlen");
+                Data.users[1].draw++;
+                Data.users[0].draw++;
+            }
             else
                 return;
             //csak akkor fut le, ha vége a játéknak
-
+            GameOver(check);
+        }
+        private void GameOver(int num) {
+            pontok1.Content = $"Pontok: {Data.users[0].win}/{Data.users[0].lose}/{Data.users[0].draw}";
+            pontok2.Content = $"Pontok: {Data.users[1].win}/{Data.users[1].lose}/{Data.users[1].draw}";
+            jatekos1.Background = new SolidColorBrush(Colors.Lime);
+            jatekos2.Background = new SolidColorBrush(Colors.Lime);
+            if (Data.users.Where(user => user.token != null).Count() == 2)
+            {
+                connection.Save(Data.users[0], num);
+                connection.Save(Data.users[1], -num);
+            }
             buttons.ForEach(button => button.Click -= ClickEvent);
         }
         private int CheckBoard()
