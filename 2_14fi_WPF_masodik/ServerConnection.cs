@@ -12,7 +12,7 @@ namespace _2_14fi_WPF_masodik
     class ServerConnection
     {
         HttpClient client = new HttpClient();
-        public async Task Registration(string username, string password) {
+        public async Task<bool> Registration(string username, string password) {
             string url = "http://127.1.1.1:3000/register";
             try
             {
@@ -35,18 +35,19 @@ namespace _2_14fi_WPF_masodik
                 JsonResponse responseJson = JsonConvert.DeserializeObject<JsonResponse>(responseText);
                 //A szerver üzenetének kiírása
                 System.Windows.MessageBox.Show(responseJson.message);
-                
+                return true;
             }
             catch (Exception e)
             {
                 System.Windows.MessageBox.Show(e.Message);
             }
-            
+            return false;
 
         }
-        public async void Login(string username, string password)
+        public async Task <JsonResponse> Login(string username, string password)
         {
             string url = "http://127.1.1.1:3000/login";
+            JsonResponse oneJsonResponse = new JsonResponse() { username = null };
             try
             {
                 var jsonData = new
@@ -70,11 +71,14 @@ namespace _2_14fi_WPF_masodik
                 //A szerver üzenetének kiírása
                 System.Windows.MessageBox.Show(responseJson.token,responseJson.message);
                 responseJson.username = username;
-                Data.users.Add(responseJson);
+                oneJsonResponse = responseJson;
+                return oneJsonResponse;
+                //Data.users.Add(responseJson);
             }
             catch (Exception e)
             {
                 System.Windows.MessageBox.Show(e.Message);
+                return oneJsonResponse;
             }
 
 

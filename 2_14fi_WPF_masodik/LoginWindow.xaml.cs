@@ -30,7 +30,7 @@ namespace _2_14fi_WPF_masodik
         }
         private void NewGame(object s, EventArgs e)
         {
-            if (Data.users.Count == 2)
+            if (Data.users.Where(user => user.username != null).Count() == 2)
             {
                 this.Hide();
                 GameWindow = new second();
@@ -40,8 +40,12 @@ namespace _2_14fi_WPF_masodik
                     this.Show();
                 };
             }
+            else
+            {
+                MessageBox.Show("Nincs két bejelentkezett felhasználó");
+            }
         }
-        private void LoginClick(Object s, EventArgs e)
+        private async void LoginClick(Object s, EventArgs e)
         {
             Button sender = s as Button;
             string username;
@@ -50,13 +54,45 @@ namespace _2_14fi_WPF_masodik
             {
                 username = user1Name.Text;
                 password = user1Pass.Text;
+                if (password.Length < 1)
+                {
+                    Data.users[0] = new JsonResponse() { username = username };
+                    return;
+                }
             }
             else
             {
                 username = user2Name.Text;
                 password = user2Pass.Text;
+                if (password.Length < 1)
+                {
+                    Data.users[1] = new JsonResponse() { username = username };
+                    return;
+                }
             }
-            connection.Login(username, password);
+            if (Data.users.Select(user => user.username).Contains(username))
+            {
+                MessageBox.Show("Duplikált bejelentkezés");
+            }
+            else
+            {
+                JsonResponse onePlayer = await connection.Login(username, password);
+                if (onePlayer.username != null)
+                {
+                    if (sender.Name == "user1Login")
+                        Data.users[0] = onePlayer;
+                    else
+                        Data.users[1] = onePlayer;
+                }
+                else
+                {
+                    if (sender.Name == "user1Login")
+                        Data.users[0] = onePlayer;
+                    else
+                        Data.users[1] = onePlayer;
+                }
+                
+            }
         }
         private void RegistrationClick(object s, EventArgs e)
         {

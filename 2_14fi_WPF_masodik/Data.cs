@@ -8,6 +8,7 @@ namespace _2_14fi_WPF_masodik
 {
     class Data
     {
-        public static List<JsonResponse> users = new List<JsonResponse>();
+        public static List<JsonResponse> users = new List<JsonResponse>()
+                                                            { new JsonResponse(), new JsonResponse() };
     }
 }
