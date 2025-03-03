@@ -55,7 +55,23 @@ namespace _2_14fi_WPF_masodik
                 //oneButton.Content = i;
             }
         }
-
+        private void retryClick(object s, EventArgs e)
+        {
+            this.Closing += retryEvent;
+            this.Close();
+        }
+        private void retryEvent(object s, EventArgs e)
+        {
+            new second(connection) { Top = this.Top, Left = this.Left }.Show();
+        }
+        private void switchClick(object s, EventArgs e)
+        {
+            JsonResponse temp = Data.users[0];
+            Data.users[0] = Data.users[1];
+            Data.users[1] = temp;
+            this.Closing += retryEvent;
+            this.Close();
+        }
         private void MouseEvent(object s, EventArgs e)
         {
             Button temp = s as Button;
@@ -129,7 +145,8 @@ namespace _2_14fi_WPF_masodik
             //csak akkor fut le, ha vége a játéknak
             GameOver(check);
         }
-        private void GameOver(int num) {
+        private void GameOver(int num)
+        {
             pontok1.Content = $"Pontok: {Data.users[0].win}/{Data.users[0].lose}/{Data.users[0].draw}";
             pontok2.Content = $"Pontok: {Data.users[1].win}/{Data.users[1].lose}/{Data.users[1].draw}";
             jatekos1.Background = new SolidColorBrush(Colors.Lime);

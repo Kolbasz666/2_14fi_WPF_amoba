@@ -64,13 +64,14 @@ namespace _2_14fi_WPF_masodik
         {
             if (Data.users.Where(user => user.username != null).Count() == 2)
             {
-                this.Hide();
+                //this.Hide();
                 GameWindow = new second(connection);
                 GameWindow.Show();
-                GameWindow.Closing += (ss, ee) =>
+                this.Close();
+                /*GameWindow.Closing += (ss, ee) =>
                 {
                     this.Show();
-                };
+                };*/
             }
             else
             {

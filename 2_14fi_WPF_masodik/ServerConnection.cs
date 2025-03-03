@@ -93,7 +93,7 @@ namespace _2_14fi_WPF_masodik
                     nyerte = result
                 };
                 string stringifiedJson = JsonConvert.SerializeObject(jsonData);
-                System.Windows.MessageBox.Show(stringifiedJson);
+                //System.Windows.MessageBox.Show(stringifiedJson);
                 StringContent sendThis = new StringContent(stringifiedJson, Encoding.UTF8, "Application/JSON");
                 //kell az authorization header: (setRequestHeader)
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", data.token);
@@ -101,7 +101,7 @@ namespace _2_14fi_WPF_masodik
                 response.EnsureSuccessStatusCode();
                 string responseText = await response.Content.ReadAsStringAsync();
                 JsonResponse responseJson = JsonConvert.DeserializeObject<JsonResponse>(responseText);
-                System.Windows.MessageBox.Show(responseJson.token, responseJson.message);
+                //System.Windows.MessageBox.Show(responseJson.token, responseJson.message);
             }
             catch (Exception e)
             {
